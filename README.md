@@ -71,4 +71,4 @@ Follow the next steps in this guide
 
 
 
-[Substrate Node Template](https://github.com/substrate-developer-hub/substrate-node-template)
+[Connect a Local Parachain](https://docs.substrate.io/tutorials/build-a-parachain/connect-a-local-parachain)
