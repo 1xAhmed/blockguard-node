@@ -60,6 +60,16 @@ xcm = { git = "https://github.com/paritytech/polkadot", default-features = false
 xcm-builder = { git = "https://github.com/paritytech/polkadot", default-features = false, branch = "release-v1.0.0" }
 xcm-executor = { git = "https://github.com/paritytech/polkadot", default-features = false, branch = "release-v1.0.0" }
 
+
+# Frontier dependencies
+pallet-evm = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+pallet-ethereum = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+fp-rpc = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+fp-evm = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+pallet-evm-chain-id = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+
+
+
 # Cumulus
 cumulus-pallet-aura-ext = { git = "https://github.com/paritytech/cumulus.git", branch = "polkadot-v1.0.0", default-features = false }
 cumulus-pallet-dmp-queue = { git = "https://github.com/paritytech/cumulus.git", branch = "polkadot-v1.0.0", default-features = false }
@@ -122,6 +132,10 @@ std = [
 	"xcm-executor/std",
 	"xcm/std",
 	"substrate-wasm-builder",
+	"pallet-evm/std",
+    "pallet-ethereum/std",
+    "fp-rpc/std",
+	"pallet-evm-chain-id/std",
 ]
 
 runtime-benchmarks = [

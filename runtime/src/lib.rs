@@ -60,6 +60,31 @@ use xcm_executor::XcmExecutor;
 /// Import the template pallet.
 pub use pallet_parachain_template;
 
+// Imports added for  Frontier
+use sp_core::U256;
+use pallet_evm::{
+	EnsureAddressRoot, EnsureAddressNever, HashedAddressMapping, SubstrateBlockHashMapping,
+};
+use pallet_ethereum::{Call::transact, PostLogContent, Transaction as EthereumTransaction};
+use fp_evm::weight_per_gas;
+
+
+//use fp_account::EthereumSignature;
+//use fp_evm::weight_per_gas;
+//use fp_rpc::TransactionStatus;
+//use pallet_ethereum::{Call::transact, PostLogContent, Transaction as EthereumTransaction};
+//use pallet_evm::{
+//	Account as EVMAccount, EnsureAccountId20, FeeCalculator, GasWeightMapping,
+//	IdentityAddressMapping, Runner,
+//};
+
+// pub use this so we can import it in the chain spec.
+#[cfg(feature = "std")]
+//pub use pallet_evm::GenesisAccount;
+pub use fp_evm::GenesisAccount; 
+
+
+
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
 pub type Signature = MultiSignature;
 
@@ -228,6 +253,12 @@ const MAXIMUM_BLOCK_WEIGHT: Weight = Weight::from_parts(
 pub fn native_version() -> NativeVersion {
 	NativeVersion { runtime_version: VERSION, can_author_with: Default::default() }
 }
+
+
+/// We allow for 2000ms of compute with a 6 second average block time.
+pub const WEIGHT_MILLISECS_PER_BLOCK: u64 = 2000;
+
+pub const MAXIMUM_BLOCK_LENGTH: u32 = 5 * 1024 * 1024;
 
 parameter_types! {
 	pub const Version: RuntimeVersion = VERSION;
@@ -463,6 +494,57 @@ impl pallet_parachain_template::Config for Runtime {
 	type RuntimeEvent = RuntimeEvent;
 }
 
+const BLOCK_GAS_LIMIT: u64 = 75_000_000;
+const MAX_POV_SIZE: u64 = 5 * 1024 * 1024;
+
+
+parameter_types! {
+	pub BlockGasLimit: U256 = U256::from(BLOCK_GAS_LIMIT);
+	pub const GasLimitPovSizeRatio: u64 = BLOCK_GAS_LIMIT.saturating_div(MAX_POV_SIZE);
+	//pub PrecompilesValue: FrontierPrecompiles<Runtime> = FrontierPrecompiles::<_>::new();
+	pub WeightPerGas: Weight = Weight::from_parts(weight_per_gas(BLOCK_GAS_LIMIT, NORMAL_DISPATCH_RATIO, WEIGHT_MILLISECS_PER_BLOCK), 0);
+	pub const BlockGuardChainId: u64 = 1337;
+}
+
+impl pallet_evm::Config for Runtime {
+	type FeeCalculator = ();
+	type GasWeightMapping = pallet_evm::FixedGasWeightMapping<Self>;
+	type WeightPerGas = WeightPerGas;
+	type BlockHashMapping = pallet_ethereum::EthereumBlockHashMapping<Self>;
+	type CallOrigin = EnsureAddressRoot<AccountId>;
+	type WithdrawOrigin = EnsureAddressNever<AccountId>;
+	type AddressMapping = HashedAddressMapping<BlakeTwo256>;
+	type Currency = Balances;
+	type RuntimeEvent = RuntimeEvent;
+	type PrecompilesType = (); //FrontierPrecompiles<Self>;
+	type PrecompilesValue = (); //PrecompilesValue;
+	type ChainId = BlockGuardChainId;
+	type BlockGasLimit = BlockGasLimit;
+	type Runner = pallet_evm::runner::stack::Runner<Self>;
+	type OnChargeTransaction = ();
+	type OnCreate = ();
+	type FindAuthor = ();
+	type GasLimitPovSizeRatio = GasLimitPovSizeRatio;
+	type Timestamp = Timestamp;
+	type WeightInfo = pallet_evm::weights::SubstrateWeight<Self>;
+}
+
+
+
+
+parameter_types! {
+	pub const PostBlockAndTxnHashes: PostLogContent = PostLogContent::BlockAndTxnHashes;
+}
+
+impl pallet_ethereum::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type StateRoot = pallet_ethereum::IntermediateStateRoot<Self>;
+	type PostLogContent = PostBlockAndTxnHashes;
+	type ExtraDataLength = ConstU32<30>;
+}
+
+
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
 	pub enum Runtime
@@ -495,6 +577,11 @@ construct_runtime!(
 
 		// Template
 		TemplatePallet: pallet_parachain_template = 50,
+
+		// Frontier stuff
+		Ethereum: pallet_ethereum = 60,
+		EVM: pallet_evm = 70,
+
 	}
 );
 

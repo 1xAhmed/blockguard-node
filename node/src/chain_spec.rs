@@ -1,5 +1,7 @@
 use cumulus_primitives_core::ParaId;
-use parachain_template_runtime::{AccountId, AuraId, Signature, EXISTENTIAL_DEPOSIT};
+use parachain_template_runtime::{AuraConfig, BalancesConfig, AccountId, Balance, 
+								RuntimeGenesisConfig, SS58Prefix,  AuraId, Signature, EXISTENTIAL_DEPOSIT};
+							
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
@@ -227,5 +229,7 @@ fn testnet_genesis(
 		},
 		transaction_payment: Default::default(),
 		sudo: parachain_template_runtime::SudoConfig { key: Some(root) },
+		evm: Default::default(), 
+		ethereum: Default::default(),	
 	}
 }
