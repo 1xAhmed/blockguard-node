@@ -62,11 +62,11 @@ xcm-executor = { git = "https://github.com/paritytech/polkadot", default-feature
 
 
 # Frontier dependencies
-pallet-evm = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
-pallet-ethereum = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
-fp-rpc = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
-fp-evm = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
-pallet-evm-chain-id = { git = "https://github.com/polkadot-evm/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+pallet-evm = { git = "https://github.com/sayyedkamran/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+pallet-ethereum = { git = "https://github.com/sayyedkamran/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+fp-rpc = { git = "https://github.com/sayyedkamran/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+fp-evm = { git = "https://github.com/sayyedkamran/frontier", default-features = false, branch = "polkadot-v1.0.0" }
+pallet-evm-chain-id = { git = "https://github.com/sayyedkamran/frontier", default-features = false, branch = "polkadot-v1.0.0" }
 
 
 
